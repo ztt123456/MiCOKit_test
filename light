@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>灯控类型</title>
+    <link rel="stylesheet" type="text/css" href="../css/header.css"/>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/jquery-2.1.3.js"></script>
+    <script type="text/javascript" src="../script/msgdic-zh.js"></script>
+    <script type="text/javascript" src="../script/light_user.js"></script>
+    <script type="text/javascript" src="../script/mico_app_user.js"></script>
+    <style>
+    	*   {
+			margin: 0px;
+			padding: 0px;
+			}
+    	body{
+    		background-color: #EBEBEB;
+			background-size: cover;
+			font-family: "黑体";
+			font-size: 13px;
+    	}
+    	.content {
+				margin: 1px;
+				padding: 1px;
+		}
+		.title {
+				margin-top: 220px;	
+				text-align: center;		
+		}
+		.title span {
+				color: #000000;
+				font-size: 30px;
+				position: relative;
+		}
+		#backleft {
+				display: block;
+			}
+    </style>
+</head>
+<body>
+	<!--顶部标题-->
+	<header id="header" class="header">
+		<a class="left" onclick="logout()" id="backleft"><img src="../image/02-exit.png" alt=""/></a>
+		<span class="center" id="device_name">灯控类型选择</span>
+	</header>	
+	<div class="content">
+		<div class="title">
+		<span id="lighttype_name">单控</span>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+apiready = function(){	
+	var coverFlow = api.require('coverFlow');
+	var imgsData=[
+		{
+			url:"single.png",
+			brief:"单控"
+		},
+		{
+			url:"group.png",
+			brief:"组控"
+		},
+		{
+			url:"scene.png",
+			brief:"场景"
+		},
+		{
+			url:"all.png",
+			brief:"全控"
+		}	
+	];
+	var paths=[];
+	for(var idx in imgsData){
+		var imgData=imgsData[idx];
+		var path="widget://image/coverFlow/"+imgData.url;
+		paths.push(path);
+	}
+	
+	coverFlow.open({
+	    "x":0,
+	    "y":320,
+	    "width":api.frameWidth,
+	    "height":api.frameHeight-300,
+	    "bgColor":"widget://image/background/",
+	    "paths":paths,
+	    fixedOn:api.frameName
+	},function(ret,err) {
+		var duration=2000;
+		
+		if(ret.eventType == "click")
+		{
+			switch(ret.index)
+			{
+				case 0:openDevlistWin();break;
+				case 1:openLightlistWin();break;
+				case 2:openScenesetWin();break;
+				case 3:break;
+				default:break;
+			}
+		}
+		else if(ret.eventType == "scroll")
+		{
+			var a = document.getElementById('lighttype_name');
+			$api.text(a,imgsData[ret.index].brief); 
+		}
+	});
+	if (api.systemType != 'ios') {
+		api.addEventListener({
+			name : "keyback"
+		}, function(ret, err) {
+			closeApp();
+		});
+	}
+}
+// 退出登录
+function logout() {
+	api.confirm({
+		title : "请三思而行~",
+		buttons : ["去意已决", "容朕想想"]
+	}, function(ret, err) {
+		if (ret.buttonIndex == 1) {
+			// 退出登录
+			//AV.User.logOut();
+			window.location.href = "./login.html";
+		} else {
+			apiToast(GOOD_JOB, 2000);
+		}
+	});
+}
+
+
+</script>
+</html>
